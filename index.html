@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+function openingCeremony(cb) {
+    console.log("Let the games begin");
+    setTimeout(() => {
+        const score = { red: 0, blue: 0, green: 0, yellow: 0 };
+        race(score, cb);
+    }, 1000);
+}
+
+function race(score, cb) {
+    setTimeout(() => {
+        const redClr = Math.floor(Math.random() * 6) + 10;
+        const blueClr = Math.floor(Math.random() * 6) + 10;
+        const greenClr = Math.floor(Math.random() * 6) + 10;
+        const yellowClr = Math.floor(Math.random() * 6) + 10;
+
+        const time = { red: redClr, blue: blueClr, green: greenClr, yellow: yellowClr };
+        const sorted = Object.keys(time).sort((a, b) => time[a] - time[b]);
+
+        score[sorted[0]] += 50;
+        score[sorted[1]] += 25;
+
+        console.log("Race completed. Score updated:", score);
+        cb(score, function (score) {
+            longJump(score, function (score) {
+                highJump(score, function (score) {
+                    awardCeremony(score);
+                });
+            });
+        });
+    }, 3000);
+}
+
+function longJump(score, cb) {
+    setTimeout(() => {
+        const colors = ['red', 'blue', 'green', 'yellow'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        score[randomColor] += 150;
+        console.log(`${randomColor} won the Long Jump. Scores updated:`, score);
+        cb(score);
+    }, 2000);
+}
+
+function highJump(score, cb) {
+    const userInput = prompt("What color secured the highest jump?");
+    if (userInput && score.hasOwnProperty(userInput.toLowerCase())) {
+        score[userInput.toLowerCase()] += 100;
+        console.log("Highjump completed. Score updated:", score);
+    } else {
+        console.log("Event was cancelled");
+    }
+    cb(score);
+}
+
+function awardCeremony(score) {
+    const sortedScores = Object.entries(score).sort((a, b) => b[1] - a[1]);
+    console.log(`${sortedScores[0][0]} came first with ${sortedScores[0][1]} points.`);
+    console.log(`${sortedScores[1][0]} came second with ${sortedScores[1][1]} points.`);
+    console.log(`${sortedScores[2][0]} came third with ${sortedScores[2][1]} points.`);
+}
+
+openingCeremony(function (score) {
+    race(score, function (score) {
+        longJump(score, function (score) {
+            highJump(score, function (score) {
+                awardCeremony(score);
+            });
+        });
+    });
+});
+
+    </script>
+</body>
+</html>
